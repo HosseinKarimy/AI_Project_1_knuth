@@ -1,13 +1,13 @@
 ﻿using AI_Project_1_knuth;
 
 Queue<Node> frontier = new();
-double goal = 12345;
+double goal = 111111;
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
 
 GraphSearch();
-TreeSearch();
+//TreeSearch();
 
 void TreeSearch()
 {
@@ -41,8 +41,8 @@ void TreeSearch()
 
 void GraphSearch()
 {
-    List<double> frontierValues = new();
-    List<double> explored = new();
+    HashSet<double> frontierValues = new();
+    HashSet<double> explored = new();
 
     while (frontier.Count > 0)
     {
@@ -50,6 +50,7 @@ void GraphSearch()
         if (node.Value == goal)
         {
             Console.WriteLine($"frontier count = {frontier.Count}");
+            Console.WriteLine($"explored count = {explored.Count}");
             PrintResult(node);
             return;
         }
