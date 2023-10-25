@@ -1,48 +1,87 @@
 ﻿using AI_Project_1_knuth;
 
-
 Queue<Node> frontier = new();
-List<double> explored = new();
-
-double goal = 1234;
+double goal = 12345;
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
 
-while(frontier.Count > 0)
+GraphSearch();
+TreeSearch();
+
+void TreeSearch()
 {
-    var node = frontier.Dequeue();
-    if (node.Value == goal)
+    while (frontier.Count > 0)
     {
-        Console.WriteLine($"frontier count = {frontier.Count}");
-        PrintResult(node);
-        return 0;
-    }
-    explored.Add(node.Value);
+        var node = frontier.Dequeue();
+        if (node.Value == goal)
+        {
+            Console.WriteLine($"frontier count = {frontier.Count}");
+            PrintResult(node);
+            return;
+        }
 
-    var parentValue = node.Value;
-    double newValue;
+        var parentValue = node.Value;
+        double newValue;
 
-    // *5 
-    newValue = parentValue * 5;
-    if (!frontier.Any(n => n.Value == newValue) && !explored.Contains(newValue))
-    {
+        // *5 
+        newValue = parentValue * 5;
         frontier.Enqueue(new Node(newValue, Operator.MultipleOn5, node));
-    }
 
-    // sqrt
-    newValue = Math.Sqrt(parentValue);
-    if (!frontier.Any(n => n.Value == newValue) && !explored.Contains(newValue))
-    {
+        // sqrt
+        newValue = Math.Sqrt(parentValue);
         frontier.Enqueue(new Node(newValue, Operator.Sqrt, node));
-    }
 
-
-    // floor
-    newValue = Math.Floor(parentValue);
-    if (newValue != parentValue && !frontier.Any(n => n.Value == newValue) && !explored.Contains(newValue))
-    {
+        // floor
+        newValue = Math.Floor(parentValue);
+        if(newValue != parentValue)
         frontier.Enqueue(new Node(newValue, Operator.Floor, node));
+    }
+}
+
+void GraphSearch()
+{
+    List<double> frontierValues = new();
+    List<double> explored = new();
+
+    while (frontier.Count > 0)
+    {
+        var node = frontier.Dequeue();
+        if (node.Value == goal)
+        {
+            Console.WriteLine($"frontier count = {frontier.Count}");
+            PrintResult(node);
+            return;
+        }
+        explored.Add(node.Value);
+
+        var parentValue = node.Value;
+        double newValue;
+
+        // *5 
+        newValue = parentValue * 5;
+        if (!frontierValues.Contains(newValue) && !explored.Contains(newValue))
+        {
+            frontier.Enqueue(new Node(newValue, Operator.MultipleOn5, node));
+            frontierValues.Add(newValue);
+        }
+
+        // sqrt
+        newValue = Math.Sqrt(parentValue);
+        if (!frontierValues.Contains(newValue) && !explored.Contains(newValue))
+        {
+            frontier.Enqueue(new Node(newValue, Operator.Sqrt, node));
+            frontierValues.Add(newValue);
+        }
+
+
+        // floor
+        newValue = Math.Floor(parentValue);
+        if (newValue != parentValue && !frontierValues.Contains(newValue) && !explored.Contains(newValue))
+        {
+            frontier.Enqueue(new Node(newValue, Operator.Floor, node));
+            frontierValues.Add(newValue);
+        }
     }
 }
 
