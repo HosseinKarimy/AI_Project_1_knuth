@@ -1,7 +1,7 @@
 ﻿using AI_Project_1_knuth;
 
 Queue<Node> frontier = new();
-double goal = 111111;
+double goal = 999;
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
@@ -41,8 +41,7 @@ void TreeSearch()
 
 void GraphSearch()
 {
-    HashSet<double> frontierValues = new();
-    HashSet<double> explored = new();
+    HashSet<double> frontierAndExplored = new();
 
     while (frontier.Count > 0)
     {
@@ -50,38 +49,35 @@ void GraphSearch()
         if (node.Value == goal)
         {
             Console.WriteLine($"frontier count = {frontier.Count}");
-            Console.WriteLine($"explored count = {explored.Count}");
+            Console.WriteLine($"explored count = {frontierAndExplored.Count}");
             PrintResult(node);
             return;
         }
-        explored.Add(node.Value);
+        frontierAndExplored.Add(node.Value);
 
         var parentValue = node.Value;
         double newValue;
 
         // *5 
         newValue = parentValue * 5;
-        if (!frontierValues.Contains(newValue) && !explored.Contains(newValue))
+        if (frontierAndExplored.Add(newValue))
         {
             frontier.Enqueue(new Node(newValue, Operator.MultipleOn5, node));
-            frontierValues.Add(newValue);
         }
 
         // sqrt
         newValue = Math.Sqrt(parentValue);
-        if (!frontierValues.Contains(newValue) && !explored.Contains(newValue))
+        if (frontierAndExplored.Add(newValue))
         {
             frontier.Enqueue(new Node(newValue, Operator.Sqrt, node));
-            frontierValues.Add(newValue);
         }
 
 
         // floor
         newValue = Math.Floor(parentValue);
-        if (newValue != parentValue && !frontierValues.Contains(newValue) && !explored.Contains(newValue))
+        if (newValue != parentValue && frontierAndExplored.Add(newValue))
         {
             frontier.Enqueue(new Node(newValue, Operator.Floor, node));
-            frontierValues.Add(newValue);
         }
     }
 }
