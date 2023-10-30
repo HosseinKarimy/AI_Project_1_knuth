@@ -1,10 +1,14 @@
 ﻿using AI_Project_1_knuth;
+using System.Diagnostics;
 
 Queue<Node> frontier = new();
 double goal = 999;
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
+
+Stopwatch sw = new();
+sw.Start();
 
 GraphSearch();
 //TreeSearch();
@@ -48,6 +52,10 @@ void GraphSearch()
         var node = frontier.Dequeue();
         if (node.Value == goal)
         {
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",ts.Hours, ts.Minutes, ts.Seconds,ts.Milliseconds / 10);
+            Console.WriteLine("RunTime: " + elapsedTime);
             Console.WriteLine($"frontier count = {frontier.Count}");
             Console.WriteLine($"explored count = {frontierAndExplored.Count}");
             PrintResult(node);
