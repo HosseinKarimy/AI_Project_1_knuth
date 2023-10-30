@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 Queue<Node> frontier = new();
-double goal = 123456;
+var goal = new Node(1234567, null, null);
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
@@ -13,93 +13,71 @@ sw.Start();
 GraphSearch();
 //TreeSearch();
 
-void TreeSearch()
-{
-    while (frontier.Count > 0)
-    {
-        var node = frontier.Dequeue();
-        if (node.Value == goal)
-        {
-            Console.WriteLine($"frontier count = {frontier.Count}");
-            PrintResult(node);
-            return;
-        }
+//void TreeSearch()
+//{
+//    while (frontier.Count > 0)
+//    {
+//        var node = frontier.Dequeue();
+//        if (node.Value == goal)
+//        {
+//            Console.WriteLine($"frontier count = {frontier.Count}");
+//            PrintResult(node);
+//            return;
+//        }
 
-        var parentValue = node.Value;
-        double newValue;
+//        var parentValue = node.Value;
+//        double newValue;
 
-        // *5 
-        newValue = parentValue * 5;
-        frontier.Enqueue(new Node(newValue, '*', node));
 
-        // sqrt
-        newValue = Math.Sqrt(parentValue);
-        frontier.Enqueue(new Node(newValue, 's', node));
-
-        // floor
-        newValue = Math.Floor(parentValue);
-        if (newValue != parentValue)
-            frontier.Enqueue(new Node(newValue, 'f', node));
-    }
-}
+//    }
+//}
 
 void GraphSearch()
 {
-    HashSet<double> frontierAndExplored = new();
+    HashSet<Node> frontierAndExplored = new();
 
     while (frontier.Count > 0)
     {
         var node = frontier.Dequeue();
-        if (node.Value == goal)
+        if (node == goal)
         {
             sw.Stop();
             TimeSpan ts = sw.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",ts.Hours, ts.Minutes, ts.Seconds,ts.Milliseconds / 10);
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             Console.WriteLine("RunTime: " + elapsedTime);
             Console.WriteLine($"frontier count = {frontier.Count}");
             Console.WriteLine($"explored count = {frontierAndExplored.Count}");
-            PrintResult(node);
+            int level = 0;
+            PrintResult(node, ref level);
             return;
         }
-        frontierAndExplored.Add(node.Value);
+        frontierAndExplored.Add(node);
 
-        var parentValue = node.Value;
-        double newValue;
-
-        // *5 
-        newValue = parentValue * 5;
-        if (frontierAndExplored.Add(newValue))
+        foreach (var n in node.GetActions())
         {
-            frontier.Enqueue(new Node(newValue, '*', node));
+            if (frontierAndExplored.Add(n))
+            {
+                frontier.Enqueue(n);
+            }
         }
 
-        // sqrt
-        newValue = Math.Sqrt(parentValue);
-        if (frontierAndExplored.Add(newValue))
-        {
-            frontier.Enqueue(new Node(newValue, 's', node));
-        }
-
-
-        // floor
-        newValue = Math.Floor(parentValue);
-        if (newValue != parentValue && frontierAndExplored.Add(newValue))
-        {
-            frontier.Enqueue(new Node(newValue, 'f', node));
-        }
     }
 }
 
-void PrintResult(Node node)
+void PrintResult(Node node, ref int level)
 {
-    if (node.Parent is null)
+    if (node.parent is null)
     {
-        Console.WriteLine("start =" + node.Value);
+        Console.WriteLine("level: " + level++);
+        node.Print();
+        Console.WriteLine("____________________________________");
         return;
     }
-    PrintResult(node.Parent);
-    var op = node.Operator == '*' ? "*5" : node.Operator == 's' ? "Sqrt" : "Floor";
-    Console.WriteLine($"{op} = {node.Value} ");
+    PrintResult(node.parent, ref level);
+    Console.WriteLine("level: " + level++);
+    node.Print();
+    Console.WriteLine("____________________________________");
+
 }
 
 return 1;
