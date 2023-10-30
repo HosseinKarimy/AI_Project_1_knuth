@@ -60,7 +60,7 @@ namespace AI_Project_1_knuth
 
         public void Print()
         {
-            var temp = op == '*' ? "*5" : op == 's' ? "Sqrt" : "Floor";
+            var temp = op == '*' ? "*5" : op == 's' ? "Sqrt" : op == 'f' ? "Floor" : " ";
             Console.WriteLine($"{temp} = {value} ");
         }
     }

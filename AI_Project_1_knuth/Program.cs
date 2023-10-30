@@ -46,7 +46,10 @@ void GraphSearch()
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             Console.WriteLine("RunTime: " + elapsedTime);
             Console.WriteLine($"frontier count = {frontier.Count}");
-            Console.WriteLine($"explored count = {frontierAndExplored.Count}");
+            Console.WriteLine($"explored count = {frontierAndExplored.Count - frontier.Count}");
+            Console.Write("Goal");
+            goal.Print();
+            Console.WriteLine("__________________________________");
             int level = 0;
             PrintResult(node, ref level);
             return;
@@ -68,15 +71,13 @@ void PrintResult(Node node, ref int level)
 {
     if (node.parent is null)
     {
-        Console.WriteLine("level: " + level++);
+        Console.Write("level " + level++);
         node.Print();
-        Console.WriteLine("____________________________________");
         return;
     }
     PrintResult(node.parent, ref level);
-    Console.WriteLine("level: " + level++);
+    Console.Write("level " + level++ + ": ");
     node.Print();
-    Console.WriteLine("____________________________________");
 
 }
 
