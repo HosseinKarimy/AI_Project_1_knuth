@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 Queue<Node> frontier = new();
-double goal = 999;
+double goal = 123456;
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
@@ -30,16 +30,16 @@ void TreeSearch()
 
         // *5 
         newValue = parentValue * 5;
-        frontier.Enqueue(new Node(newValue, Operator.MultipleOn5, node));
+        frontier.Enqueue(new Node(newValue, '*', node));
 
         // sqrt
         newValue = Math.Sqrt(parentValue);
-        frontier.Enqueue(new Node(newValue, Operator.Sqrt, node));
+        frontier.Enqueue(new Node(newValue, 's', node));
 
         // floor
         newValue = Math.Floor(parentValue);
-        if(newValue != parentValue)
-        frontier.Enqueue(new Node(newValue, Operator.Floor, node));
+        if (newValue != parentValue)
+            frontier.Enqueue(new Node(newValue, 'f', node));
     }
 }
 
@@ -70,14 +70,14 @@ void GraphSearch()
         newValue = parentValue * 5;
         if (frontierAndExplored.Add(newValue))
         {
-            frontier.Enqueue(new Node(newValue, Operator.MultipleOn5, node));
+            frontier.Enqueue(new Node(newValue, '*', node));
         }
 
         // sqrt
         newValue = Math.Sqrt(parentValue);
         if (frontierAndExplored.Add(newValue))
         {
-            frontier.Enqueue(new Node(newValue, Operator.Sqrt, node));
+            frontier.Enqueue(new Node(newValue, 's', node));
         }
 
 
@@ -85,7 +85,7 @@ void GraphSearch()
         newValue = Math.Floor(parentValue);
         if (newValue != parentValue && frontierAndExplored.Add(newValue))
         {
-            frontier.Enqueue(new Node(newValue, Operator.Floor, node));
+            frontier.Enqueue(new Node(newValue, 'f', node));
         }
     }
 }
@@ -98,7 +98,8 @@ void PrintResult(Node node)
         return;
     }
     PrintResult(node.Parent);
-    Console.WriteLine($"{node.Operator} = {node.Value} ");
+    var op = node.Operator == '*' ? "*5" : node.Operator == 's' ? "Sqrt" : "Floor";
+    Console.WriteLine($"{op} = {node.Value} ");
 }
 
 return 1;
