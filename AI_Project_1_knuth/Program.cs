@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 Queue<Node> frontier = new();
-var goal = new Node(1234567, null, null);
+var goal = new Node(12345678, null, null);
 
 var root = new Node(4, null, null);
 frontier.Enqueue(root);
@@ -13,24 +13,32 @@ sw.Start();
 GraphSearch();
 //TreeSearch();
 
-//void TreeSearch()
-//{
-//    while (frontier.Count > 0)
-//    {
-//        var node = frontier.Dequeue();
-//        if (node.Value == goal)
-//        {
-//            Console.WriteLine($"frontier count = {frontier.Count}");
-//            PrintResult(node);
-//            return;
-//        }
+void TreeSearch()
+{
+    while (frontier.Count > 0)
+    {
+        var node = frontier.Dequeue();
+        if (node == goal)
+        {
+            sw.Stop();
+            TimeSpan ts = sw.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+            Console.WriteLine("RunTime: " + elapsedTime);
+            Console.WriteLine($"frontier count = {frontier.Count}");
+            Console.Write("Goal");
+            goal.Print();
+            Console.WriteLine("__________________________________");
+            int level = 0;
+            PrintResult(node, ref level);
+            return;
+        }
 
-//        var parentValue = node.Value;
-//        double newValue;
-
-
-//    }
-//}
+        foreach (var n in node.GetActions())
+        {
+            frontier.Enqueue(n);
+        }
+    }
+}
 
 void GraphSearch()
 {
